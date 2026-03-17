@@ -20,7 +20,7 @@ export default function App() {
   const inputFile = useConverterStore((s) => s.inputFile)
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen bg-gray-50 py-6 sm:py-10 px-4">
       <div className="mx-auto max-w-2xl space-y-8">
         {/* Header */}
         <div>

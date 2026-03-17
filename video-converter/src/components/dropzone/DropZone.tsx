@@ -104,7 +104,7 @@ export function DropZone() {
       onDragLeave={onDragLeave}
       onClick={() => inputRef.current?.click()}
       className={[
-        'cursor-pointer rounded-xl border-2 border-dashed p-10 text-center transition-colors',
+        'cursor-pointer rounded-xl border-2 border-dashed p-6 sm:p-10 text-center transition-colors',
         isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50 hover:border-blue-400 hover:bg-blue-50/40',
       ].join(' ')}
     >
@@ -115,7 +115,7 @@ export function DropZone() {
             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
         </svg>
       </div>
-      <p className="text-sm font-medium text-gray-700">Drop a video file here, or click to browse</p>
+      <p className="text-sm font-medium text-gray-700">Tap to select a video, or drop one here</p>
       <p className="mt-1 text-xs text-gray-400">MP4, WebM, MOV, AVI, MKV &middot; up to 4 GB</p>
       {validationError && (
         <p className="mt-3 text-xs text-red-600 font-medium">{validationError}</p>
