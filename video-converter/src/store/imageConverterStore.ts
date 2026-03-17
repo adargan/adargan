@@ -16,6 +16,7 @@ export interface ImageQueueItem {
   id: string
   file: File
   isSvg: boolean
+  previewUrl: string
   status: ImageConversionStatus
   result: ImageConversionResult | null
   error: string | null
@@ -47,8 +48,9 @@ function outputFilename(original: string, isSvg: boolean, format: RasterOutputFo
   return isSvg ? `${base}.optimized.svg` : `${base}.${format}`
 }
 
-function revokeResults(files: Map<string, ImageQueueItem>) {
+function revokeAll(files: Map<string, ImageQueueItem>) {
   for (const item of files.values()) {
+    URL.revokeObjectURL(item.previewUrl)
     if (item.result?.url) URL.revokeObjectURL(item.result.url)
   }
 }
@@ -68,6 +70,7 @@ export const useImageConverterStore = create<ImageConverterState>((set, get) => 
         id,
         file,
         isSvg: isSvgFile(file),
+        previewUrl: URL.createObjectURL(file),
         status: 'idle',
         result: null,
         error: null,
@@ -79,13 +82,16 @@ export const useImageConverterStore = create<ImageConverterState>((set, get) => 
   removeFile: (id) => {
     const current = new Map(get().files)
     const item = current.get(id)
-    if (item?.result?.url) URL.revokeObjectURL(item.result.url)
+    if (item) {
+      URL.revokeObjectURL(item.previewUrl)
+      if (item.result?.url) URL.revokeObjectURL(item.result.url)
+    }
     current.delete(id)
     set({ files: current, batchStatus: current.size === 0 ? 'idle' : get().batchStatus })
   },
 
   clearFiles: () => {
-    revokeResults(get().files)
+    revokeAll(get().files)
     set({ files: new Map(), batchStatus: 'idle' })
   },
 
@@ -150,7 +156,7 @@ export const useImageConverterStore = create<ImageConverterState>((set, get) => 
   },
 
   reset: () => {
-    revokeResults(get().files)
+    revokeAll(get().files)
     set({ files: new Map(), batchStatus: 'idle' })
   },
 }))
