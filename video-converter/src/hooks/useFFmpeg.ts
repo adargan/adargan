@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback } from 'react'
 import { FFmpeg } from '@ffmpeg/ffmpeg'
+import { toBlobURL } from '@ffmpeg/util'
 
 const CORE_URL = '/ffmpeg/ffmpeg-core.js'
 const WASM_URL = '/ffmpeg/ffmpeg-core.wasm'
@@ -40,7 +41,11 @@ export function useFFmpeg() {
       }
 
       try {
-        await ffmpeg.load({ coreURL: CORE_URL, wasmURL: WASM_URL })
+        const [coreURL, wasmURL] = await Promise.all([
+          toBlobURL(CORE_URL, 'text/javascript'),
+          toBlobURL(WASM_URL, 'application/wasm'),
+        ])
+        await ffmpeg.load({ coreURL, wasmURL })
         ffmpegRef.current = ffmpeg
         setIsLoaded(true)
       } catch (err) {
