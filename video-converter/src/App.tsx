@@ -9,6 +9,7 @@ import { DownloadResult } from '@/components/conversion/DownloadResult'
 import { ImageDropZone } from '@/components/image/ImageDropZone'
 import { ImageFormatControls } from '@/components/image/ImageFormatControls'
 import { ImageResultCard } from '@/components/image/ImageResultCard'
+import { PdfTab } from '@/components/pdf/PdfTab'
 import { useConverterStore } from '@/store/converterStore'
 import { useImageConverterStore } from '@/store/imageConverterStore'
 
@@ -78,14 +79,14 @@ function ImageTab() {
 
       {allSvg && (
         <Section title="2. Optimisation">
-          <div className="rounded-xl border border-gray-200 bg-white p-4">
-            <p className="text-sm text-gray-700">
+          <div className="rounded-xl border border-gray-700 bg-gray-900 p-4">
+            <p className="text-sm text-gray-300">
               SVG files will be optimised with{' '}
-              <a href="https://svgo.dev" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+              <a href="https://svgo.dev" target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">
                 SVGO
               </a>{' '}
               — removes comments, metadata, and redundant attributes while preserving{' '}
-              <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">viewBox</code>.
+              <code className="text-xs bg-gray-800 px-1 py-0.5 rounded text-gray-300">viewBox</code>.
             </p>
           </div>
         </Section>
@@ -99,8 +100,8 @@ function ImageTab() {
             className={[
               'w-full rounded-xl px-6 py-3 text-sm font-semibold text-white transition-colors',
               isConverting
-                ? 'bg-blue-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700',
+                ? 'bg-blue-500 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-500',
             ].join(' ')}
           >
             {isConverting
@@ -119,11 +120,11 @@ function ImageTab() {
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-50 py-6 sm:py-10 px-4">
+    <div className="min-h-screen bg-gray-950 py-6 sm:py-10 px-4">
       <div className="mx-auto max-w-2xl space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Media Converter</h1>
+          <h1 className="text-2xl font-bold text-gray-100">Media Converter</h1>
           <p className="mt-1 text-sm text-gray-500">
             100% in-browser — your files never leave your device
           </p>
@@ -131,17 +132,18 @@ export default function App() {
 
         {/* Tabs */}
         <Tabs.Root defaultValue="video">
-          <Tabs.List className="flex gap-1 rounded-xl bg-gray-200 p-1 mb-8">
+          <Tabs.List className="flex gap-1 rounded-xl bg-gray-800 p-1 mb-8">
             {[
               { value: 'video', label: '🎬 Video' },
               { value: 'image', label: '🖼️ Image' },
+              { value: 'pdf', label: '📄 PDF' },
             ].map((tab) => (
               <Tabs.Trigger
                 key={tab.value}
                 value={tab.value}
                 className="flex-1 rounded-lg py-2.5 text-sm font-semibold transition-all text-gray-500
-                  data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow
-                  hover:text-gray-700 cursor-pointer"
+                  data-[state=active]:bg-gray-700 data-[state=active]:text-gray-100 data-[state=active]:shadow
+                  hover:text-gray-300 cursor-pointer"
               >
                 {tab.label}
               </Tabs.Trigger>
@@ -154,6 +156,10 @@ export default function App() {
 
           <Tabs.Content value="image">
             <ImageTab />
+          </Tabs.Content>
+
+          <Tabs.Content value="pdf">
+            <PdfTab />
           </Tabs.Content>
         </Tabs.Root>
       </div>

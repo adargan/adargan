@@ -9,9 +9,9 @@ function formatBytes(bytes: number) {
 
 function savingsBadge(original: number, output: number) {
   const pct = ((original - output) / original) * 100
-  if (pct > 0) return { label: `${pct.toFixed(1)}% smaller`, color: 'text-green-700 bg-green-50 border-green-200' }
-  if (pct < 0) return { label: `${Math.abs(pct).toFixed(1)}% larger`, color: 'text-orange-700 bg-orange-50 border-orange-200' }
-  return { label: 'No change', color: 'text-gray-600 bg-gray-50 border-gray-200' }
+  if (pct > 0) return { label: `${pct.toFixed(1)}% smaller`, color: 'text-green-400 bg-green-950 border-green-700' }
+  if (pct < 0) return { label: `${Math.abs(pct).toFixed(1)}% larger`, color: 'text-orange-400 bg-orange-950 border-orange-700' }
+  return { label: 'No change', color: 'text-gray-400 bg-gray-800 border-gray-700' }
 }
 
 function SingleResult({ item }: { item: ImageQueueItem }) {
@@ -24,11 +24,11 @@ function SingleResult({ item }: { item: ImageQueueItem }) {
         <img
           src={item.result.url}
           alt="Converted"
-          className="flex-shrink-0 w-12 h-12 rounded-lg object-cover bg-gray-100 border border-green-200"
+          className="flex-shrink-0 w-12 h-12 rounded-lg object-cover bg-gray-800 border border-gray-700"
         />
 
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-green-800 truncate">{item.result.filename}</p>
+          <p className="text-sm font-medium text-green-300 truncate">{item.result.filename}</p>
           <p className="text-xs text-gray-500 mt-0.5">
             {formatBytes(item.file.size)} → {formatBytes(item.result.outputSize)}
             <span className={`ml-2 text-xs font-semibold border rounded-full px-1.5 py-0.5 ${badge.color}`}>
@@ -39,7 +39,7 @@ function SingleResult({ item }: { item: ImageQueueItem }) {
         <a
           href={item.result.url}
           download={item.result.filename}
-          className="flex-shrink-0 rounded-lg bg-green-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-800 transition-colors"
+          className="flex-shrink-0 rounded-lg bg-green-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-600 transition-colors"
         >
           Download
         </a>
@@ -60,12 +60,12 @@ export function ImageResultCard() {
     <div className="space-y-3">
       {/* Errors */}
       {errorItems.length > 0 && (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-4 space-y-1">
-          <p className="text-sm font-medium text-red-700">
+        <div className="rounded-xl border border-red-700 bg-red-950/40 p-4 space-y-1">
+          <p className="text-sm font-medium text-red-400">
             {errorItems.length} file{errorItems.length > 1 ? 's' : ''} failed
           </p>
           {errorItems.map((item) => (
-            <p key={item.id} className="text-xs text-red-600">
+            <p key={item.id} className="text-xs text-red-500">
               {item.file.name}: {item.error}
             </p>
           ))}
@@ -74,15 +74,15 @@ export function ImageResultCard() {
 
       {/* Successes */}
       {doneItems.length > 0 && (
-        <div className="rounded-xl border border-green-200 bg-green-50 space-y-0 divide-y divide-green-100">
+        <div className="rounded-xl border border-green-700 bg-green-950/30 space-y-0 divide-y divide-green-900">
           <div className="px-4 py-3 flex items-center justify-between">
-            <p className="text-sm font-semibold text-green-800">
+            <p className="text-sm font-semibold text-green-300">
               {doneItems.length} file{doneItems.length > 1 ? 's' : ''} converted
             </p>
             {batchStatus === 'done' && (
               <button
                 onClick={clearFiles}
-                className="text-xs text-green-700 hover:underline"
+                className="text-xs text-green-500 hover:underline"
               >
                 Clear all
               </button>

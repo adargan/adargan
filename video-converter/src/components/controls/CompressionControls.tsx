@@ -51,11 +51,11 @@ export function CompressionControls() {
     <div className="space-y-4">
       {/* Video codec */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Video codec</label>
+        <label className="block text-sm font-medium text-gray-300 mb-1">Video codec</label>
         <select
           value={compression.videoCodec}
           onChange={(e) => update({ videoCodec: e.target.value as VideoCodec })}
-          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           {VIDEO_CODECS.map((c) => (
             <option key={c.value} value={c.value}>{c.label}</option>
@@ -66,8 +66,8 @@ export function CompressionControls() {
       {/* Mode toggle */}
       {crfSupported && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Quality mode</label>
-          <div className="flex rounded-md border border-gray-300 overflow-hidden">
+          <label className="block text-sm font-medium text-gray-300 mb-1">Quality mode</label>
+          <div className="flex rounded-md border border-gray-700 overflow-hidden">
             {(['crf', 'bitrate'] as CompressionMode[]).map((mode) => (
               <button
                 key={mode}
@@ -77,7 +77,7 @@ export function CompressionControls() {
                   'flex-1 py-2 text-sm font-medium transition-colors',
                   compression.mode === mode
                     ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-600 hover:bg-gray-50',
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700',
                 ].join(' ')}
               >
                 {mode === 'crf' ? 'CRF (quality)' : 'Bitrate'}
@@ -91,8 +91,8 @@ export function CompressionControls() {
       {crfSupported && compression.mode === 'crf' && (
         <div>
           <div className="flex justify-between mb-1">
-            <label className="text-sm font-medium text-gray-700">Quality (CRF)</label>
-            <span className="text-sm font-mono text-gray-600">
+            <label className="text-sm font-medium text-gray-300">Quality (CRF)</label>
+            <span className="text-sm font-mono text-gray-400">
               {compression.crf} {compression.crf <= 18 ? '· High' : compression.crf >= 32 ? '· Low' : '· Medium'}
             </span>
           </div>
@@ -103,7 +103,7 @@ export function CompressionControls() {
             value={[compression.crf]}
             onValueChange={([val]) => update({ crf: val })}
           />
-          <div className="flex justify-between mt-1 text-xs text-gray-400">
+          <div className="flex justify-between mt-1 text-xs text-gray-500">
             <span>Best quality (large)</span>
             <span>Smallest (low quality)</span>
           </div>
@@ -113,14 +113,14 @@ export function CompressionControls() {
       {/* Bitrate input */}
       {(!crfSupported || compression.mode === 'bitrate') && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-300 mb-1">
             Video bitrate (e.g. 2000k, 4M)
           </label>
           <input
             type="text"
             value={compression.videoBitrate}
             onChange={(e) => update({ videoBitrate: e.target.value })}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="2000k"
           />
         </div>
@@ -129,17 +129,17 @@ export function CompressionControls() {
       {/* Encoder preset */}
       {(compression.videoCodec === 'libx264' || compression.videoCodec === 'libx265') && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Encoder preset</label>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Encoder preset</label>
           <select
             value={compression.preset}
             onChange={(e) => update({ preset: e.target.value as EncoderPreset })}
-            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {PRESETS.map((p) => (
               <option key={p.value} value={p.value}>{p.label}</option>
             ))}
           </select>
-          <p className="mt-1 text-xs text-gray-400">Slower = better compression at same quality</p>
+          <p className="mt-1 text-xs text-gray-500">Slower = better compression at same quality</p>
         </div>
       )}
     </div>

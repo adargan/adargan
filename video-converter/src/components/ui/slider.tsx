@@ -16,7 +16,7 @@ const Slider = React.forwardRef<
       className={cn('relative flex w-full touch-none select-none items-center', className)}
       {...props}
     >
-      <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-gray-200">
+      <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-gray-700">
         <SliderPrimitive.Range className="absolute h-full bg-blue-600" />
       </SliderPrimitive.Track>
       {Array.from({ length: thumbCount }).map((_, i) => (

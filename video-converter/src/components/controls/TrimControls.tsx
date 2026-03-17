@@ -19,7 +19,7 @@ export function TrimControls() {
   )
 
   if (!duration) {
-    return <p className="text-sm text-gray-400 italic">Load a video to enable trimming.</p>
+    return <p className="text-sm text-gray-500 italic">Load a video to enable trimming.</p>
   }
 
   return (
@@ -32,7 +32,7 @@ export function TrimControls() {
           onClick={() => update({ enabled: !trim.enabled })}
           className={[
             'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
-            trim.enabled ? 'bg-blue-600' : 'bg-gray-200',
+            trim.enabled ? 'bg-blue-600' : 'bg-gray-700',
           ].join(' ')}
         >
           <span
@@ -42,7 +42,7 @@ export function TrimControls() {
             ].join(' ')}
           />
         </div>
-        <span className="text-sm font-medium text-gray-700">Enable trim</span>
+        <span className="text-sm font-medium text-gray-300">Enable trim</span>
       </label>
 
       {trim.enabled && (
@@ -50,11 +50,11 @@ export function TrimControls() {
           {/* Range slider (dual thumb) */}
           <div>
             <div className="flex justify-between mb-1">
-              <span className="text-xs font-mono text-gray-600">{formatTime(trim.startTime)}</span>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs font-mono text-gray-400">{formatTime(trim.startTime)}</span>
+              <span className="text-xs text-gray-500">
                 clip length: {formatTime(trim.endTime - trim.startTime)}
               </span>
-              <span className="text-xs font-mono text-gray-600">{formatTime(trim.endTime)}</span>
+              <span className="text-xs font-mono text-gray-400">{formatTime(trim.endTime)}</span>
             </div>
             <Slider
               min={0}
@@ -65,7 +65,7 @@ export function TrimControls() {
                 update({ startTime: start, endTime: end })
               }}
             />
-            <div className="flex justify-between mt-1 text-xs text-gray-400">
+            <div className="flex justify-between mt-1 text-xs text-gray-500">
               <span>0:00</span>
               <span>{formatTime(duration)}</span>
             </div>
@@ -74,7 +74,7 @@ export function TrimControls() {
           {/* Manual inputs */}
           <div className="flex gap-3">
             <div className="flex-1">
-              <label className="block text-xs font-medium text-gray-600 mb-1">Start (s)</label>
+              <label className="block text-xs font-medium text-gray-400 mb-1">Start (s)</label>
               <input
                 type="number"
                 min={0}
@@ -85,11 +85,11 @@ export function TrimControls() {
                   const v = Math.max(0, Math.min(parseFloat(e.target.value), trim.endTime - 0.1))
                   update({ startTime: isNaN(v) ? 0 : v })
                 }}
-                className="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-700 bg-gray-800 px-2 py-1.5 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div className="flex-1">
-              <label className="block text-xs font-medium text-gray-600 mb-1">End (s)</label>
+              <label className="block text-xs font-medium text-gray-400 mb-1">End (s)</label>
               <input
                 type="number"
                 min={trim.startTime + 0.1}
@@ -100,7 +100,7 @@ export function TrimControls() {
                   const v = Math.min(duration, Math.max(parseFloat(e.target.value), trim.startTime + 0.1))
                   update({ endTime: isNaN(v) ? duration : v })
                 }}
-                className="w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md border border-gray-700 bg-gray-800 px-2 py-1.5 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -112,11 +112,11 @@ export function TrimControls() {
                 type="checkbox"
                 checked={trim.accurateTrim}
                 onChange={(e) => update({ accurateTrim: e.target.checked })}
-                className="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="mt-0.5 rounded border-gray-600 text-blue-600 focus:ring-blue-500"
               />
               <div>
-                <span className="text-sm font-medium text-gray-700">Frame-accurate trim</span>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <span className="text-sm font-medium text-gray-300">Frame-accurate trim</span>
+                <p className="text-xs text-gray-500 mt-0.5">
                   Slower but precise to the exact frame. Default seeks to the nearest keyframe.
                 </p>
               </div>

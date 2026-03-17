@@ -73,7 +73,7 @@ export function ConversionPanel() {
         <div className="space-y-1">
           <Progress value={progress} />
           {processingTime > 0 && (
-            <p className="text-xs text-gray-400 text-right">
+            <p className="text-xs text-gray-500 text-right">
               processed {formatTime(processingTime)}
             </p>
           )}
@@ -82,11 +82,11 @@ export function ConversionPanel() {
 
       {/* Error */}
       {status === 'error' && errorMessage && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
-          <p className="text-sm font-medium text-red-700">{errorMessage}</p>
+        <div className="rounded-lg border border-red-700 bg-red-950/50 px-4 py-3">
+          <p className="text-sm font-medium text-red-400">{errorMessage}</p>
           <button
             onClick={reset}
-            className="mt-1 text-xs text-red-600 hover:underline"
+            className="mt-1 text-xs text-red-400 hover:underline"
           >
             Try again
           </button>
@@ -96,7 +96,7 @@ export function ConversionPanel() {
       {/* Log output */}
       {logs.length > 0 && (
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">Log</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Log</p>
           <div
             ref={logRef}
             className="h-32 overflow-y-auto rounded-md bg-gray-950 px-3 py-2 font-mono text-xs text-green-400 space-y-0.5"

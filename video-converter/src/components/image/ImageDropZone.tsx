@@ -67,27 +67,27 @@ export function ImageDropZone() {
     <div className="space-y-3">
       {/* File list */}
       {fileList.length > 0 && (
-        <div className="rounded-xl border border-gray-200 bg-white divide-y divide-gray-100 max-h-64 overflow-y-auto">
+        <div className="rounded-xl border border-gray-700 bg-gray-900 divide-y divide-gray-700 max-h-64 overflow-y-auto">
           {fileList.map((item) => (
             <div key={item.id} className="flex items-center gap-3 px-4 py-2.5">
               <img
                 src={item.previewUrl}
                 alt={item.file.name}
-                className="flex-shrink-0 w-10 h-10 rounded-lg object-cover bg-gray-100"
+                className="flex-shrink-0 w-10 h-10 rounded-lg object-cover bg-gray-800"
               />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">{item.file.name}</p>
+                <p className="text-sm font-medium text-gray-100 truncate">{item.file.name}</p>
                 <p className="text-xs text-gray-500">
                   {formatBytes(item.file.size)}
-                  {item.status === 'converting' && <span className="ml-2 text-blue-600">Converting…</span>}
-                  {item.status === 'done' && <span className="ml-2 text-green-600">Done</span>}
-                  {item.status === 'error' && <span className="ml-2 text-red-600">Failed</span>}
+                  {item.status === 'converting' && <span className="ml-2 text-blue-400">Converting…</span>}
+                  {item.status === 'done' && <span className="ml-2 text-green-400">Done</span>}
+                  {item.status === 'error' && <span className="ml-2 text-red-400">Failed</span>}
                 </p>
               </div>
               {!isConverting && (
                 <button
                   onClick={() => removeFile(item.id)}
-                  className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors"
+                  className="flex-shrink-0 text-gray-600 hover:text-red-400 transition-colors"
                   title="Remove"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,8 +110,8 @@ export function ImageDropZone() {
           'cursor-pointer rounded-xl border-2 border-dashed text-center transition-colors',
           fileList.length > 0 ? 'p-4' : 'p-6 sm:p-10',
           isDragging
-            ? 'border-blue-500 bg-blue-50'
-            : 'border-gray-300 bg-gray-50 hover:border-blue-400 hover:bg-blue-50/40',
+            ? 'border-blue-500 bg-blue-950/30'
+            : 'border-gray-700 bg-gray-900 hover:border-blue-500 hover:bg-blue-950/20',
           isConverting ? 'pointer-events-none opacity-50' : '',
         ].join(' ')}
       >
@@ -125,14 +125,14 @@ export function ImageDropZone() {
         />
         {fileList.length === 0 ? (
           <>
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-              <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-950">
+              <svg className="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
               </svg>
             </div>
-            <p className="text-sm font-medium text-gray-700">Tap to select images, or drop them here</p>
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="text-sm font-medium text-gray-300">Tap to select images, or drop them here</p>
+            <p className="mt-1 text-xs text-gray-500">
               JPEG, PNG, WebP, GIF &rarr; WebP / AVIF &middot; SVG &rarr; optimised SVG &middot; up to 50 MB each
             </p>
           </>
@@ -140,7 +140,7 @@ export function ImageDropZone() {
           <p className="text-sm text-gray-500">Drop more images or click to add</p>
         )}
         {validationError && (
-          <p className="mt-3 text-xs text-red-600 font-medium">{validationError}</p>
+          <p className="mt-3 text-xs text-red-400 font-medium">{validationError}</p>
         )}
       </div>
     </div>

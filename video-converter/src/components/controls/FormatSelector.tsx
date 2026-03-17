@@ -20,8 +20,8 @@ function FormatButton({ label, value, selected, onClick }: FormatButtonProps) {
       className={[
         'rounded-lg border px-3 py-2 text-sm font-medium transition-colors',
         selected
-          ? 'border-blue-600 bg-blue-600 text-white'
-          : 'border-gray-200 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50',
+          ? 'border-blue-500 bg-blue-600 text-white'
+          : 'border-gray-700 bg-gray-800 text-gray-300 hover:border-blue-500 hover:bg-gray-700',
       ].join(' ')}
     >
       {label}
@@ -47,7 +47,7 @@ export function FormatSelector() {
   return (
     <div className="space-y-3">
       <div>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Video</p>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Video</p>
         <div className="flex flex-wrap gap-2">
           {VIDEO_FORMATS.map((f) => (
             <FormatButton
@@ -61,7 +61,7 @@ export function FormatSelector() {
         </div>
       </div>
       <div>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">Audio only</p>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Audio only</p>
         <div className="flex flex-wrap gap-2">
           {AUDIO_FORMATS.map((f) => (
             <FormatButton
