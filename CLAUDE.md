@@ -5,19 +5,11 @@ This file provides guidance to AI assistants (Claude and others) working in this
 ## Repository Overview
 
 **Repository:** adargan/adargan
-**Status:** Newly initialized — no source files have been committed yet.
-
-This CLAUDE.md will be updated as the project evolves. AI assistants should update this file when significant structural or workflow changes are made.
+**Project:** `video-converter/` — a fully in-browser video converter powered by ffmpeg.wasm
 
 ## Current State
 
-The repository contains no source code, dependencies, tests, or documentation beyond this file. Before working on code tasks, check:
-
-```bash
-git branch -a          # list all branches
-git log --oneline -20  # recent commit history
-ls -la                 # current working directory contents
-```
+The `video-converter/` app is complete and production-ready. It converts video files entirely in the browser — no server upload required.
 
 ## Git Workflow
 
@@ -42,51 +34,64 @@ If push fails due to network issues, retry with exponential backoff: 2s, 4s, 8s,
 
 ## Development Setup
 
-> This section should be updated once the project stack is established.
+**Stack:** React 19 + TypeScript + Vite + Tailwind CSS + ffmpeg.wasm + Zustand
 
-When the project is initialized, document here:
-- Language and runtime version requirements
-- How to install dependencies
-- How to start a development server or REPL
-- Required environment variables (never commit secrets)
+```bash
+cd video-converter
+npm install
+npm run dev        # dev server at http://localhost:5173
+npm run build      # production build → dist/
+npm run preview    # serve dist/ locally
+```
+
+**Required browser flags (already handled by vite.config.ts):**
+
+The dev server and `vite preview` both set:
+```
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: require-corp
+```
+
+These are required for `SharedArrayBuffer` (used by ffmpeg.wasm). `public/_headers` sets them for Netlify/Cloudflare Pages deployments.
 
 ## Testing
 
-> Update this section once a test framework is chosen.
-
-Document here:
-- Test runner command (e.g., `npm test`, `pytest`, `cargo test`, `go test ./...`)
-- How to run a single test file or test case
-- How to run tests with coverage
-- What must pass before committing
+No automated test suite yet. Before committing, verify manually:
+1. `npm run build` must succeed with zero TypeScript errors
+2. Drop a video file → configure → convert → download and verify the output plays
 
 ## Build & CI
 
-> Update this section once CI/CD is configured.
+```bash
+npm run build   # tsc -b && vite build
+```
 
-Document here:
-- Build command
-- Lint/format commands
-- CI pipeline location (`.github/workflows/`, etc.)
-- What checks must pass before merging
+Output goes to `video-converter/dist/`. The `dist/` directory is gitignored.
 
 ## Code Conventions
 
-> Update this section once a language and style guide are established.
-
-Document here:
-- Formatting tool and config (e.g., Prettier, Black, rustfmt)
-- Linter (e.g., ESLint, Ruff, Clippy)
-- File and directory naming conventions
-- Import ordering conventions
+- **Language:** TypeScript strict mode
+- **Style:** Tailwind utility classes only (no custom CSS except `index.css` for Tailwind directives)
+- **Components:** Functional components + React hooks; no class components
+- **State:** Zustand store at `src/store/converterStore.ts`; no Redux/Context for app state
+- **Imports:** Use `@/` alias for `src/` (configured in `tsconfig.json` and `vite.config.ts`)
 
 ## Key Directories
 
-> Update this section as the project structure takes shape.
-
-| Directory | Purpose |
-|-----------|---------|
-| _(none yet)_ | _(repository is empty)_ |
+| Path | Purpose |
+|------|---------|
+| `video-converter/src/types/converter.ts` | All shared TypeScript types |
+| `video-converter/src/lib/formatDefinitions.ts` | Output format metadata (codecs, MIME types) |
+| `video-converter/src/lib/ffmpegCommands.ts` | Pure ffmpeg arg builders |
+| `video-converter/src/store/converterStore.ts` | Zustand store — single source of truth |
+| `video-converter/src/hooks/useFFmpeg.ts` | ffmpeg.wasm lifecycle (load/exec/read/write) |
+| `video-converter/src/hooks/useConversion.ts` | Full conversion pipeline orchestration |
+| `video-converter/src/hooks/useVideoMetadata.ts` | Reads duration/dimensions from `<video>` |
+| `video-converter/src/components/dropzone/` | File drag-and-drop input |
+| `video-converter/src/components/controls/` | Format, compression, trim, audio controls |
+| `video-converter/src/components/conversion/` | Progress panel + download result card |
+| `video-converter/src/components/ui/` | Radix-based primitives (Button, Slider, etc.) |
+| `video-converter/public/ffmpeg/` | ffmpeg-core.js + ffmpeg-core.wasm (static assets) |
 
 ## AI Assistant Instructions
 
@@ -95,5 +100,5 @@ Document here:
 3. **Keep secrets out of commits** — use environment variables or secret managers.
 4. **Follow the branch rules** above — always work on the designated `claude/` branch.
 5. **Prefer small, focused commits** over large atomic changes when possible.
-6. **Run tests and linters** before committing (once configured).
+6. **Run `npm run build` before committing** — zero TypeScript errors required.
 7. **Ask before destructive operations** (force-push, branch deletion, database drops, etc.).
