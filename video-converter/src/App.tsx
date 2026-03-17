@@ -122,17 +122,17 @@ export default function App() {
 
         {/* Tabs */}
         <Tabs.Root defaultValue="video">
-          <Tabs.List className="flex gap-1 rounded-xl bg-gray-200/60 p-1 mb-8">
+          <Tabs.List className="flex gap-1 rounded-xl bg-gray-200 p-1 mb-8">
             {[
-              { value: 'video', label: 'Video' },
-              { value: 'image', label: 'Image' },
+              { value: 'video', label: '🎬 Video' },
+              { value: 'image', label: '🖼️ Image' },
             ].map((tab) => (
               <Tabs.Trigger
                 key={tab.value}
                 value={tab.value}
-                className="flex-1 rounded-lg py-2 text-sm font-medium transition-colors text-gray-600
-                  data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm
-                  hover:text-gray-900"
+                className="flex-1 rounded-lg py-2.5 text-sm font-semibold transition-all text-gray-500
+                  data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow
+                  hover:text-gray-700 cursor-pointer"
               >
                 {tab.label}
               </Tabs.Trigger>
