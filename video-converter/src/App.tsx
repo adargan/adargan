@@ -56,24 +56,31 @@ function VideoTab() {
 }
 
 function ImageTab() {
-  const { file, isSvg, status, convert } = useImageConverterStore()
+  const { files, batchStatus, convertAll } = useImageConverterStore()
+  const fileList = Array.from(files.values())
+  const hasFiles = fileList.length > 0
+  const hasRaster = fileList.some((f) => !f.isSvg)
+  const allSvg = hasFiles && fileList.every((f) => f.isSvg)
+  const isConverting = batchStatus === 'converting'
+  const pendingCount = fileList.filter((f) => f.status !== 'done').length
+
   return (
     <div className="space-y-8">
-      <Section title="1. Input file">
+      <Section title="1. Input files">
         <ImageDropZone />
       </Section>
 
-      {file && !isSvg && (
+      {hasRaster && (
         <Section title="2. Output format &amp; quality">
           <ImageFormatControls />
         </Section>
       )}
 
-      {file && isSvg && (
+      {allSvg && (
         <Section title="2. Optimisation">
           <div className="rounded-xl border border-gray-200 bg-white p-4">
             <p className="text-sm text-gray-700">
-              SVG will be optimised with{' '}
+              SVG files will be optimised with{' '}
               <a href="https://svgo.dev" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
                 SVGO
               </a>{' '}
@@ -84,21 +91,23 @@ function ImageTab() {
         </Section>
       )}
 
-      {file && (
-        <Section title={isSvg ? '3. Optimise' : '3. Convert'}>
+      {hasFiles && pendingCount > 0 && (
+        <Section title={allSvg ? '3. Optimise' : '3. Convert'}>
           <button
-            onClick={() => void convert()}
-            disabled={status === 'converting'}
+            onClick={() => void convertAll()}
+            disabled={isConverting}
             className={[
               'w-full rounded-xl px-6 py-3 text-sm font-semibold text-white transition-colors',
-              status === 'converting'
+              isConverting
                 ? 'bg-blue-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700',
             ].join(' ')}
           >
-            {status === 'converting'
-              ? isSvg ? 'Optimising…' : 'Converting…'
-              : isSvg ? 'Optimise SVG' : 'Convert'}
+            {isConverting
+              ? allSvg ? 'Optimising…' : 'Converting…'
+              : allSvg
+                ? `Optimise ${pendingCount} SVG${pendingCount > 1 ? 's' : ''}`
+                : `Convert ${pendingCount} file${pendingCount > 1 ? 's' : ''}`}
           </button>
         </Section>
       )}

@@ -12,20 +12,34 @@ export interface ImageConversionResult {
   outputSize: number
 }
 
-interface ImageConverterState {
-  file: File | null
+export interface ImageQueueItem {
+  id: string
+  file: File
   isSvg: boolean
-  outputFormat: RasterOutputFormat
-  quality: number
   status: ImageConversionStatus
   result: ImageConversionResult | null
   error: string | null
+}
 
-  setFile: (file: File | null) => void
+interface ImageConverterState {
+  files: Map<string, ImageQueueItem>
+  outputFormat: RasterOutputFormat
+  quality: number
+  batchStatus: 'idle' | 'converting' | 'done'
+
+  addFiles: (files: File[]) => void
+  removeFile: (id: string) => void
+  clearFiles: () => void
   setOutputFormat: (fmt: RasterOutputFormat) => void
   setQuality: (q: number) => void
-  convert: () => Promise<void>
+  convertAll: () => Promise<void>
   reset: () => void
+}
+
+const MAX_FILES = 50
+
+function isSvgFile(file: File): boolean {
+  return file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg')
 }
 
 function outputFilename(original: string, isSvg: boolean, format: RasterOutputFormat): string {
@@ -33,71 +47,110 @@ function outputFilename(original: string, isSvg: boolean, format: RasterOutputFo
   return isSvg ? `${base}.optimized.svg` : `${base}.${format}`
 }
 
+function revokeResults(files: Map<string, ImageQueueItem>) {
+  for (const item of files.values()) {
+    if (item.result?.url) URL.revokeObjectURL(item.result.url)
+  }
+}
+
 export const useImageConverterStore = create<ImageConverterState>((set, get) => ({
-  file: null,
-  isSvg: false,
+  files: new Map(),
   outputFormat: 'webp',
   quality: 82,
-  status: 'idle',
-  result: null,
-  error: null,
+  batchStatus: 'idle',
 
-  setFile: (file) => {
-    const prev = get().result?.url
-    if (prev) URL.revokeObjectURL(prev)
-    if (!file) {
-      set({ file: null, isSvg: false, status: 'idle', result: null, error: null })
-      return
+  addFiles: (newFiles) => {
+    const current = new Map(get().files)
+    for (const file of newFiles) {
+      if (current.size >= MAX_FILES) break
+      const id = crypto.randomUUID()
+      current.set(id, {
+        id,
+        file,
+        isSvg: isSvgFile(file),
+        status: 'idle',
+        result: null,
+        error: null,
+      })
     }
-    set({
-      file,
-      isSvg: file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg'),
-      status: 'idle',
-      result: null,
-      error: null,
-    })
+    set({ files: current, batchStatus: 'idle' })
+  },
+
+  removeFile: (id) => {
+    const current = new Map(get().files)
+    const item = current.get(id)
+    if (item?.result?.url) URL.revokeObjectURL(item.result.url)
+    current.delete(id)
+    set({ files: current, batchStatus: current.size === 0 ? 'idle' : get().batchStatus })
+  },
+
+  clearFiles: () => {
+    revokeResults(get().files)
+    set({ files: new Map(), batchStatus: 'idle' })
   },
 
   setOutputFormat: (fmt) => set({ outputFormat: fmt }),
   setQuality: (q) => set({ quality: q }),
 
-  convert: async () => {
-    const { file, isSvg, outputFormat, quality } = get()
-    if (!file) return
+  convertAll: async () => {
+    const { files, outputFormat, quality } = get()
+    if (files.size === 0) return
 
-    set({ status: 'converting', result: null, error: null })
+    set({ batchStatus: 'converting' })
 
-    try {
-      let blob: Blob
+    const CONCURRENCY = 3
+    const pending = Array.from(files.values()).filter((f) => f.status !== 'done')
 
-      if (isSvg) {
-        const text = await file.text()
-        const optimized = optimizeSvg(text)
-        blob = new Blob([optimized], { type: 'image/svg+xml' })
-      } else {
-        blob = await convertRaster(file, outputFormat, quality)
-      }
+    for (let i = 0; i < pending.length; i += CONCURRENCY) {
+      const chunk = pending.slice(i, i + CONCURRENCY)
 
-      const prev = get().result?.url
-      if (prev) URL.revokeObjectURL(prev)
-      const url = URL.createObjectURL(blob)
-      const filename = outputFilename(file.name, isSvg, outputFormat)
+      await Promise.all(
+        chunk.map(async (item) => {
+          // Mark converting
+          const current = new Map(get().files)
+          const entry = current.get(item.id)
+          if (!entry) return
+          entry.status = 'converting'
+          set({ files: current })
 
-      set({
-        status: 'done',
-        result: { blob, url, filename, outputSize: blob.size },
-      })
-    } catch (err) {
-      set({
-        status: 'error',
-        error: err instanceof Error ? err.message : 'Conversion failed',
-      })
+          try {
+            let blob: Blob
+            if (item.isSvg) {
+              const text = await item.file.text()
+              const optimized = optimizeSvg(text)
+              blob = new Blob([optimized], { type: 'image/svg+xml' })
+            } else {
+              blob = await convertRaster(item.file, outputFormat, quality)
+            }
+
+            const url = URL.createObjectURL(blob)
+            const filename = outputFilename(item.file.name, item.isSvg, outputFormat)
+
+            const updated = new Map(get().files)
+            const e = updated.get(item.id)
+            if (e) {
+              e.status = 'done'
+              e.result = { blob, url, filename, outputSize: blob.size }
+              set({ files: updated })
+            }
+          } catch (err) {
+            const updated = new Map(get().files)
+            const e = updated.get(item.id)
+            if (e) {
+              e.status = 'error'
+              e.error = err instanceof Error ? err.message : 'Conversion failed'
+              set({ files: updated })
+            }
+          }
+        }),
+      )
     }
+
+    set({ batchStatus: 'done' })
   },
 
   reset: () => {
-    const prev = get().result?.url
-    if (prev) URL.revokeObjectURL(prev)
-    set({ file: null, isSvg: false, status: 'idle', result: null, error: null })
+    revokeResults(get().files)
+    set({ files: new Map(), batchStatus: 'idle' })
   },
 }))
