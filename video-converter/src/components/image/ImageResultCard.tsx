@@ -21,28 +21,11 @@ function SingleResult({ item }: { item: ImageQueueItem }) {
   return (
     <div className="px-4 py-3 space-y-3">
       <div className="flex items-center gap-3">
-        {/* Before / After thumbnails */}
-        <div className="flex-shrink-0 flex items-center gap-2">
-          <div className="text-center">
-            <img
-              src={item.previewUrl}
-              alt="Original"
-              className="w-12 h-12 rounded-lg object-cover bg-gray-100 border border-gray-200"
-            />
-            <p className="text-[10px] text-gray-400 mt-0.5">Before</p>
-          </div>
-          <svg className="w-3 h-3 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-          <div className="text-center">
-            <img
-              src={item.result.url}
-              alt="Converted"
-              className="w-12 h-12 rounded-lg object-cover bg-gray-100 border border-green-200"
-            />
-            <p className="text-[10px] text-gray-400 mt-0.5">After</p>
-          </div>
-        </div>
+        <img
+          src={item.result.url}
+          alt="Converted"
+          className="flex-shrink-0 w-12 h-12 rounded-lg object-cover bg-gray-100 border border-green-200"
+        />
 
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-green-800 truncate">{item.result.filename}</p>
