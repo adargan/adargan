@@ -12,6 +12,7 @@ import { ImageResultCard } from '@/components/image/ImageResultCard'
 import { PdfTab } from '@/components/pdf/PdfTab'
 import { useConverterStore } from '@/store/converterStore'
 import { useImageConverterStore } from '@/store/imageConverterStore'
+import { InstallButton } from '@/components/ui/InstallButton'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -123,11 +124,14 @@ export default function App() {
     <div className="min-h-screen bg-gray-950 py-6 sm:py-10 px-4">
       <div className="mx-auto max-w-2xl space-y-8">
         {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold text-gray-100">Media Converter</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            100% in-browser — your files never leave your device
-          </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-100">Media Converter</h1>
+            <p className="mt-1 text-sm text-gray-500">
+              100% in-browser — your files never leave your device
+            </p>
+          </div>
+          <InstallButton />
         </div>
 
         {/* Tabs */}
